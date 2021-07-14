@@ -1,0 +1,15 @@
+version: 1.0
+configuration:
+  has_webserver: false
+  readonly_paths:
+    - src/test/*
+  scoring:
+    command: mvn clean test
+    files:
+      - target/surefire-reports/TEST-com.example.hrspringbootwebtest.controller.TestEmployeeRESTController.xml
+  ide_config:
+    default_open_files:
+      - src/main/java/com/example/hrspringbootwebtest/model/Employee.java
+      - src/main/java/com/example/hrspringbootwebtest/repository/EmployeeRepository.java
+    project_menu:
+      test: mvn clean test
