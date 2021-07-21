@@ -15,6 +15,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.web.context.WebApplicationContext;
 
 import com.example.hrspringbootwebtest.model.Employee;
+import com.example.hrspringbootwebtest.repository.EmployeeRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 @SpringBootTest
@@ -23,10 +24,16 @@ public class TestEmployeeRESTController {
 	@Autowired
 	private WebApplicationContext webApplicationContext;
 	private MockMvc mvc;
+	
+	@Autowired
+	private EmployeeRepository employeeRepository;
 
 	@BeforeEach
 	public void getContext() {
 		mvc = webAppContextSetup(webApplicationContext).build();
+		
+		employeeRepository.save(new Employee(2l, "aaa2", "bbb2", "ccc2"));
+		employeeRepository.save(new Employee(3l, "aaa2", "bbb2", "ccc2"));
 	}
 
 	@Test
@@ -39,7 +46,7 @@ public class TestEmployeeRESTController {
 	@Test
 	public void createEmployeeAPI() throws Exception {
 		mvc.perform(MockMvcRequestBuilders.post("/employees")
-				.content(asJsonString(new Employee(null, "firstName4", "lastName4", "email4@mail.com")))
+				.content(asJsonString(new Employee(1l, "firstName4", "lastName4", "email4@mail.com")))
 				.contentType(MediaType.APPLICATION_JSON)
 				.accept(MediaType.APPLICATION_JSON))
 				.andExpect(MockMvcResultMatchers.jsonPath("$.employeeId").exists());
@@ -60,6 +67,7 @@ public class TestEmployeeRESTController {
 
 	@Test
 	public void updateEmployeeAPI() throws Exception {
+		
 		mvc.perform(MockMvcRequestBuilders.put("/employees/{id}", 2)
 				.content(asJsonString(new Employee(2l, "firstName2", "lastName2", "email2@mail.com")))
 				.contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON)).andExpect(status().isOk())
@@ -70,7 +78,7 @@ public class TestEmployeeRESTController {
 
 	@Test
 	public void deleteEmployeeAPI() throws Exception {
-		mvc.perform(MockMvcRequestBuilders.delete("/employees/{id}", 1)).andExpect(status().isAccepted());
+		mvc.perform(MockMvcRequestBuilders.delete("/employees/{id}", 3)).andExpect(status().isAccepted());
 	}
 
 }
